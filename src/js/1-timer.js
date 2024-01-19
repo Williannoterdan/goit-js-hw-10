@@ -15,27 +15,33 @@ const options = {
   minuteIncrement: 1,
 
   onClose(selectedDates) {
+    clearInterval(taimerInterval);
+    if (
+      second.textContent > 1 ||
+      minutes.textContent > 1 ||
+      hours.textContent > 1 ||
+      days.textContent > 1
+    ) {
+      tostStopolldtaimer();
+    }
+    rezering();
     console.log(selectedDates[0]);
-      new Promise((resolve, reject) => {
-        setTimeout(() => {
-          if (selectedDates[0] - options.defaultDate > 0) {
-            resolve(
-              (userSelectedDate = selectedDates[0]),
-              bottonStart.removeAttribute('disabled')
-            );
-          } else {
-            reject(
-              iziToast.error({
-    title: 'Error',
-    message: "Please choose a date in the future",
-}),
-              
-              bottonStart.setAttribute('disabled', '')
-            );
-          }
-        });
+    new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (selectedDates[0] - options.defaultDate > 0) {
+          resolve(
+            (userSelectedDate = selectedDates[0]),
+            bottonStart.removeAttribute('disabled')
+          );
+        } else {
+          reject(
+            tostPleasechooseadateinthefuture(),
+            bottonStart.setAttribute('disabled', '')
+          );
+        }
       });
-    
+    });
+
     console.log('user selected:', userSelectedDate);
   },
 };
@@ -81,32 +87,80 @@ iziToast.settings({
 });
 
 function getTaim(taimConteiner) {
-  second.textContent = taimConteiner.seconds;
-  minutes.textContent = taimConteiner.minutes;
-  hours.textContent = taimConteiner.hours;
-  days.textContent = taimConteiner.days;
-};
+  second.textContent = taimConteiner.seconds.toString().padStart(2, '0');
+  minutes.textContent = taimConteiner.minutes.toString().padStart(2, '0');
+  hours.textContent = taimConteiner.hours.toString().padStart(2, '0');
+  days.textContent = taimConteiner.days.toString().padStart(2, '0');
+  if (
+    second.textContent < 0 &&
+    minutes.textContent < 0 &&
+    hours.textContent < 0 &&
+    days.textContent < 0
+  ) {
+    clearInterval(taimerInterval);
+    rezering();
+  }
+}
+function rezering() {
+  second.textContent = '00';
+  minutes.textContent = '00';
+  hours.textContent = '00';
+  days.textContent = '00';
+}
 
 let taimerInterval;
 
 function taimer() {
+  if (
+    second.textContent > 1 ||
+    minutes.textContent > 1 ||
+    hours.textContent > 1 ||
+    days.textContent > 1
+  ) {
+    iziToast.success({
+      title: 'OK',
+      message: 'Taimer retorn',
+    });
+  } else {
+    iziToast.success({
+      title: 'OK',
+      message: 'Taimer start',
+    });
+  }
   bottonStart.setAttribute('disabled', '');
   bottonStop.removeAttribute('disabled');
   taimerInterval = setInterval(() => {
-    let taimConteiner = convertMs(userSelectedDate.getTime() - Date.now());
+    let taimConteinerMS = userSelectedDate.getTime() - Date.now();
+
+    let taimConteiner = convertMs(taimConteinerMS);
+
     console.log(taimConteiner);
-    // second.textContent = taimConteiner.seconds
     getTaim(taimConteiner);
   }, 1000);
-};
+}
 
 bottonStart.addEventListener('click', taimer);
-  bottonStop.addEventListener('click', () => {
-    clearInterval(taimerInterval);
-    bottonStop.setAttribute('disabled', '');
-    iziToast.warning({
-      title: 'Caution',
-      message: 'Temporal stop',
-    });
 
-  }); 
+bottonStop.addEventListener('click', () => {
+  clearInterval(taimerInterval);
+  bottonStop.setAttribute('disabled', '');
+  iziToast.warning({
+    title: 'Caution',
+    message: 'Taimerl stop',
+  });
+  bottonStart.removeAttribute('disabled');
+});
+
+// tosts
+function tostStopolldtaimer() {
+  iziToast.info({
+    title: 'Info',
+    message: 'Stop olld taimer',
+  });
+}
+function tostPleasechooseadateinthefuture() {
+  iziToast.error({
+    title: 'Error',
+    message: 'Please choose a date in the future',
+  });
+}
