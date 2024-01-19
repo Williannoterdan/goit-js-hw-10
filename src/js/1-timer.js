@@ -16,7 +16,6 @@ const options = {
 
   onClose(selectedDates) {
     console.log(selectedDates[0]);
-    new Promise(() => {
       new Promise((resolve, reject) => {
         setTimeout(() => {
           if (selectedDates[0] - options.defaultDate > 0) {
@@ -26,13 +25,17 @@ const options = {
             );
           } else {
             reject(
-              console.log("'Please choose a date in the future'"),
+              iziToast.error({
+    title: 'Error',
+    message: "Please choose a date in the future",
+}),
+              
               bottonStart.setAttribute('disabled', '')
             );
           }
         });
       });
-    });
+    
     console.log('user selected:', userSelectedDate);
   },
 };
@@ -82,27 +85,28 @@ function getTaim(taimConteiner) {
   minutes.textContent = taimConteiner.minutes;
   hours.textContent = taimConteiner.hours;
   days.textContent = taimConteiner.days;
-}
+};
+
+let taimerInterval;
+
 function taimer() {
   bottonStart.setAttribute('disabled', '');
   bottonStop.removeAttribute('disabled');
-  let taimerInterval = setInterval(() => {
-    
+  taimerInterval = setInterval(() => {
     let taimConteiner = convertMs(userSelectedDate.getTime() - Date.now());
     console.log(taimConteiner);
     // second.textContent = taimConteiner.seconds
     getTaim(taimConteiner);
   }, 1000);
-  bottonStop.addEventListener('click', () => {
-    iziToast.error({
-      title: 'Error',
-      message: 'Illegal operation',
-    }),
-      clearInterval(taimerInterval);
-    bottonStop.setAttribute('disabled', '');
-    // bottonStart.removeEventListener('click', taimer);
-     bottonStart.stopPropagation();
+};
 
-  });
-}
 bottonStart.addEventListener('click', taimer);
+  bottonStop.addEventListener('click', () => {
+    clearInterval(taimerInterval);
+    bottonStop.setAttribute('disabled', '');
+    iziToast.warning({
+      title: 'Caution',
+      message: 'Temporal stop',
+    });
+
+  }); 
