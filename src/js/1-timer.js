@@ -1,8 +1,17 @@
 import flatpickr from 'flatpickr';
 import iziToast from 'izitoast';
+
 let userSelectedDate = Date();
+
 const bottonStart = document.querySelector('button[data-start]');
 const bottonStop = document.querySelector('button[data-stop]');
+const bottonReset = document.querySelector('button[data-reset]');
+const bottonRetorn = document.querySelector('button[data-retorn]');
+bottonStart.setAttribute('disabled', '');
+bottonStop.setAttribute('disabled', '');
+bottonReset.setAttribute('disabled', '');
+bottonRetorn.setAttribute('disabled', '');
+
 let second = document.querySelector('span[data-seconds]');
 let minutes = document.querySelector('span[data-minutes]');
 let hours = document.querySelector('span[data-hours]');
@@ -31,7 +40,10 @@ const options = {
         if (selectedDates[0] - options.defaultDate > 0) {
           resolve(
             (userSelectedDate = selectedDates[0]),
-            bottonStart.removeAttribute('disabled')
+            bottonStart.removeAttribute('disabled'),
+            bottonStop.setAttribute('disabled', ''),
+            bottonReset.setAttribute('disabled', ''),
+            bottonRetorn.setAttribute('disabled', '')
           );
         } else {
           reject(
@@ -110,46 +122,49 @@ function rezering() {
 
 let taimerInterval;
 
-function taimer() {
-  if (
-    second.textContent > 1 ||
-    minutes.textContent > 1 ||
-    hours.textContent > 1 ||
-    days.textContent > 1
-  ) {
-    iziToast.success({
-      title: 'OK',
-      message: 'Taimer retorn',
-    });
-  } else {
-    iziToast.success({
-      title: 'OK',
-      message: 'Taimer start',
-    });
-  }
+function taimerStart() {
+  tostTaimerStart();
   bottonStart.setAttribute('disabled', '');
+  bottonReset.removeAttribute('disabled');
   bottonStop.removeAttribute('disabled');
   taimerInterval = setInterval(() => {
     let taimConteinerMS = userSelectedDate.getTime() - Date.now();
-
     let taimConteiner = convertMs(taimConteinerMS);
-
     console.log(taimConteiner);
     getTaim(taimConteiner);
   }, 1000);
 }
-
-bottonStart.addEventListener('click', taimer);
-
-bottonStop.addEventListener('click', () => {
+function taimerRetorn() {
+  tostTaimerRetorn();
+  bottonRetorn.setAttribute('disabled', '');
+  bottonStop.removeAttribute('disabled');
+  taimerInterval = setInterval(() => {
+    let taimConteinerMS = userSelectedDate.getTime() - Date.now();
+    let taimConteiner = convertMs(taimConteinerMS);
+    console.log(taimConteiner);
+    getTaim(taimConteiner);
+  }, 1000);
+}
+function taimerStop() {
+  tostTaimerStop();
   clearInterval(taimerInterval);
   bottonStop.setAttribute('disabled', '');
-  iziToast.warning({
-    title: 'Caution',
-    message: 'Taimerl stop',
-  });
-  bottonStart.removeAttribute('disabled');
-});
+  bottonRetorn.removeAttribute('disabled');
+}
+function taimerReset() {
+  tostTaimerReset();
+  rezering();
+  clearInterval(taimerInterval);
+  bottonStop.setAttribute('disabled', '');
+  bottonReset.setAttribute('disabled', '');
+  bottonRetorn.setAttribute('disabled', '');
+  flatpickr('#datetime-picker',options)
+}
+
+bottonStart.addEventListener('click', taimerStart);
+bottonRetorn.addEventListener('click', taimerRetorn);
+bottonStop.addEventListener('click', taimerStop);
+bottonReset.addEventListener('click', taimerReset);
 
 // tosts
 function tostStopolldtaimer() {
@@ -162,5 +177,29 @@ function tostPleasechooseadateinthefuture() {
   iziToast.error({
     title: 'Error',
     message: 'Please choose a date in the future',
+  });
+}
+function tostTaimerRetorn() {
+  iziToast.success({
+    title: 'OK',
+    message: 'Taimer retorn',
+  });
+}
+function tostTaimerStart() {
+  iziToast.success({
+    title: 'OK',
+    message: 'Taimer start',
+  });
+}
+function tostTaimerStop() {
+  iziToast.warning({
+    title: 'Caution',
+    message: 'Taimer stop',
+  });
+}
+function tostTaimerReset() {
+  iziToast.warning({
+    title: 'Caution',
+    message: 'Taimer reset',
   });
 }
