@@ -126,7 +126,5 @@ margin-top: 16px;
 form button:hover{
   background-color: var(--color-background-two);
   color: var(--color-buton-txt);
-  padding:  10px;
-  font-size: 22px;
-  margin-top: 0px;
+
 }

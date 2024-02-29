@@ -104,10 +104,10 @@ function getTaim(taimConteiner) {
   hours.textContent = taimConteiner.hours.toString().padStart(2, '0');
   days.textContent = taimConteiner.days.toString().padStart(2, '0');
   if (
-    second.textContent < 0 &&
-    minutes.textContent < 0 &&
-    hours.textContent < 0 &&
-    days.textContent < 0
+    second.textContent < 1 &&
+    minutes.textContent < 1 &&
+    hours.textContent < 1 &&
+    days.textContent < 1
   ) {
     clearInterval(taimerInterval);
     rezering();
