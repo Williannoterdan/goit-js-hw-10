@@ -4,13 +4,9 @@ import iziToast from 'izitoast';
 let userSelectedDate = Date();
 
 const bottonStart = document.querySelector('button[data-start]');
-const bottonStop = document.querySelector('button[data-stop]');
-const bottonReset = document.querySelector('button[data-reset]');
-const bottonRetorn = document.querySelector('button[data-retorn]');
+
 bottonStart.setAttribute('disabled', '');
-bottonStop.setAttribute('disabled', '');
-bottonReset.setAttribute('disabled', '');
-bottonRetorn.setAttribute('disabled', '');
+
 
 let second = document.querySelector('span[data-seconds]');
 let minutes = document.querySelector('span[data-minutes]');
@@ -41,9 +37,6 @@ const options = {
           resolve(
             (userSelectedDate = selectedDates[0]),
             bottonStart.removeAttribute('disabled'),
-            bottonStop.setAttribute('disabled', ''),
-            bottonReset.setAttribute('disabled', ''),
-            bottonRetorn.setAttribute('disabled', '')
           );
         } else {
           reject(
@@ -125,81 +118,27 @@ let taimerInterval;
 function taimerStart() {
   tostTaimerStart();
   bottonStart.setAttribute('disabled', '');
-  bottonReset.removeAttribute('disabled');
-  bottonStop.removeAttribute('disabled');
   taimerInterval = setInterval(() => {
     let taimConteinerMS = userSelectedDate.getTime() - Date.now();
     let taimConteiner = convertMs(taimConteinerMS);
     console.log(taimConteiner);
     getTaim(taimConteiner);
   }, 1000);
-}
-function taimerRetorn() {
-  tostTaimerRetorn();
-  bottonRetorn.setAttribute('disabled', '');
-  bottonStop.removeAttribute('disabled');
-  taimerInterval = setInterval(() => {
-    let taimConteinerMS = userSelectedDate.getTime() - Date.now();
-    let taimConteiner = convertMs(taimConteinerMS);
-    console.log(taimConteiner);
-    getTaim(taimConteiner);
-  }, 1000);
-}
-function taimerStop() {
-  tostTaimerStop();
-  clearInterval(taimerInterval);
-  bottonStop.setAttribute('disabled', '');
-  bottonRetorn.removeAttribute('disabled');
-}
-function taimerReset() {
-  tostTaimerReset();
-  rezering();
-  clearInterval(taimerInterval);
-  bottonStop.setAttribute('disabled', '');
-  bottonReset.setAttribute('disabled', '');
-  bottonRetorn.setAttribute('disabled', '');
-  flatpickr('#datetime-picker',options)
 }
 
 bottonStart.addEventListener('click', taimerStart);
-bottonRetorn.addEventListener('click', taimerRetorn);
-bottonStop.addEventListener('click', taimerStop);
-bottonReset.addEventListener('click', taimerReset);
 
 // tosts
-function tostStopolldtaimer() {
-  iziToast.info({
-    title: 'Info',
-    message: 'Stop olld taimer',
-  });
-}
+
 function tostPleasechooseadateinthefuture() {
   iziToast.error({
     title: 'Error',
     message: 'Please choose a date in the future',
   });
 }
-function tostTaimerRetorn() {
-  iziToast.success({
-    title: 'OK',
-    message: 'Taimer retorn',
-  });
-}
 function tostTaimerStart() {
   iziToast.success({
     title: 'OK',
     message: 'Taimer start',
-  });
-}
-function tostTaimerStop() {
-  iziToast.warning({
-    title: 'Caution',
-    message: 'Taimer stop',
-  });
-}
-function tostTaimerReset() {
-  iziToast.warning({
-    title: 'Caution',
-    message: 'Taimer reset',
   });
 }

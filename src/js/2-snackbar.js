@@ -23,32 +23,32 @@ form.addEventListener('submit', event => {
     let elem = event.target.state.value;
     let taim = event.target.delay.value;
     form.reset();
-    new Promise((resolve, reject) => {
-      setTimeout(() => {
-          if (elem == "fulfilled") {
-              resolve(
-              setTimeout((elem) => {
-                iziToast.success({
-                  title: '✅',
-                  message: `Fulfilled promise in ${taim}ms`,
-                });
-            }, taim))
-        } else {
-              reject(
-              setTimeout((elem) => {
+  let promis = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (elem == "fulfilled") {
+        resolve(taim)
+      }
+      reject(taim)
+    },taim);
+  })
+    promis
+      .then(resolv => {
+                  iziToast.success({
+                    title: '✅',
+                    message: `Fulfilled promise in ${resolv}ms`,
+                  });
+
+      })
+      .catch(reject => {
+
                 iziToast.error({
                   title: '❌',
-                  message: `Rejected promise in ${taim}ms`,
+                  message: `Rejected promise in ${reject}ms`,
                 });
-            }, taim));
-          
-        }
       });
     
     
-    
     });
-});
 
 
 
