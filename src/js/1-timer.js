@@ -5,7 +5,6 @@ let userSelectedDate = Date();
 
 const bottonStart = document.querySelector('button[data-start]');
 
-bottonStart.setAttribute('disabled', '');
 
 
 let second = document.querySelector('span[data-seconds]');
@@ -16,7 +15,7 @@ let days = document.querySelector('span[data-days]');
 const options = {
   enableTime: true,
   time_24hr: true,
-  defaultDate: new Date(),
+  defaultDate: Date(),
   minuteIncrement: 1,
 
   onClose(selectedDates) {
@@ -119,7 +118,7 @@ function taimerStart() {
   tostTaimerStart();
   bottonStart.setAttribute('disabled', '');
   taimerInterval = setInterval(() => {
-    let taimConteinerMS = userSelectedDate.getTime() - Date.now();
+    let taimConteinerMS = userSelectedDate.getTime() - Date();
     let taimConteiner = convertMs(taimConteinerMS);
     console.log(taimConteiner);
     getTaim(taimConteiner);
