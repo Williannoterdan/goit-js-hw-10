@@ -66,7 +66,6 @@ function getTaim(taimConteiner) {
 
 
 function taimerStart() {
-  tostTaimerStart();
   bottonStart.setAttribute('disabled', '');
 
   console.log(userSelectedDate);
@@ -93,23 +92,11 @@ iziToast.settings({
   icon: 'material-icons',
   transitionIn: 'flipInX',
   transitionOut: 'flipOutX',
-  onOpening: function () {
-    console.log('callback abriu!');
-  },
-  onClosing: function () {
-    console.log('callback fechou!');
-  },
 });
 
 function tostPleasechooseadateinthefuture() {
   iziToast.error({
     title: 'Error',
     message: 'Please choose a date in the future',
-  });
-}
-function tostTaimerStart() {
-  iziToast.success({
-    title: 'OK',
-    message: 'Taimer start',
   });
 }
