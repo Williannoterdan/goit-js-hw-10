@@ -1,12 +1,9 @@
 import flatpickr from 'flatpickr';
 import iziToast from 'izitoast';
 
-let userSelectedDate = Date();
+let userSelectedDate ;
 
-const bottonStart = document.querySelector('button[data-start]');
-
-
-
+const bottonStart = document.querySelector('button[data-start]')
 let second = document.querySelector('span[data-seconds]');
 let minutes = document.querySelector('span[data-minutes]');
 let hours = document.querySelector('span[data-hours]');
@@ -15,37 +12,21 @@ let days = document.querySelector('span[data-days]');
 const options = {
   enableTime: true,
   time_24hr: true,
-  defaultDate: Date(),
+  defaultDate: Date.now(),
   minuteIncrement: 1,
 
   onClose(selectedDates) {
-    clearInterval(taimerInterval);
-    if (
-      second.textContent > 1 ||
-      minutes.textContent > 1 ||
-      hours.textContent > 1 ||
-      days.textContent > 1
-    ) {
-      tostStopolldtaimer();
-    }
-    rezering();
     console.log(selectedDates[0]);
-    new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (selectedDates[0] - options.defaultDate > 0) {
-          resolve(
-            (userSelectedDate = selectedDates[0]),
-            bottonStart.removeAttribute('disabled'),
-          );
-        } else {
-          reject(
-            tostPleasechooseadateinthefuture(),
-            bottonStart.setAttribute('disabled', '')
-          );
-        }
-      });
-    });
+      if (selectedDates[0] - options.defaultDate > 0) {
+        userSelectedDate = selectedDates[0],
+          console.log(userSelectedDate);
+          bottonStart.removeAttribute('disabled')
+      }
+      else {
+        tostPleasechooseadateinthefuture(),
+          bottonStart.setAttribute('disabled', '')
 
+      }
     console.log('user selected:', userSelectedDate);
   },
 };
@@ -71,10 +52,40 @@ function convertMs(ms) {
   return { days, hours, minutes, seconds };
 }
 
-console.log(convertMs(2000)); // {days: 0, hours: 0, minutes: 0, seconds: 2}
-console.log(convertMs(140000)); // {days: 0, hours: 0, minutes: 2, seconds: 20}
-console.log(convertMs(24140000)); // {days: 0, hours: 6 minutes: 42, seconds: 20}
 console.log(convertMs(userSelectedDate));
+
+
+
+function getTaim(taimConteiner) {
+  second.textContent = taimConteiner.seconds.toString().padStart(2, '0');
+  minutes.textContent = taimConteiner.minutes.toString().padStart(2, '0');
+  hours.textContent = taimConteiner.hours.toString().padStart(2, '0');
+  days.textContent = taimConteiner.days.toString().padStart(2, '0');
+}
+
+
+
+function taimerStart() {
+  tostTaimerStart();
+  bottonStart.setAttribute('disabled', '');
+
+  console.log(userSelectedDate);
+  let taimRan = setInterval(() => {
+
+    let actualTaim = userSelectedDate - Date.now();
+    console.log(actualTaim);
+    if (actualTaim < 1000) {
+      clearInterval(taimRan);
+    }
+    let taimConteiner = convertMs(actualTaim);
+    console.log(taimConteiner);
+    getTaim(taimConteiner);
+  }, 1000);
+}
+
+bottonStart.addEventListener('click', taimerStart);
+
+// tosts
 
 iziToast.settings({
   timeout: 10000,
@@ -89,45 +100,6 @@ iziToast.settings({
     console.log('callback fechou!');
   },
 });
-
-function getTaim(taimConteiner) {
-  second.textContent = taimConteiner.seconds.toString().padStart(2, '0');
-  minutes.textContent = taimConteiner.minutes.toString().padStart(2, '0');
-  hours.textContent = taimConteiner.hours.toString().padStart(2, '0');
-  days.textContent = taimConteiner.days.toString().padStart(2, '0');
-  if (
-    second.textContent < 1 &&
-    minutes.textContent < 1 &&
-    hours.textContent < 1 &&
-    days.textContent < 1
-  ) {
-    clearInterval(taimerInterval);
-    rezering();
-  }
-}
-function rezering() {
-  second.textContent = '00';
-  minutes.textContent = '00';
-  hours.textContent = '00';
-  days.textContent = '00';
-}
-
-let taimerInterval;
-
-function taimerStart() {
-  tostTaimerStart();
-  bottonStart.setAttribute('disabled', '');
-  taimerInterval = setInterval(() => {
-    let taimConteinerMS = userSelectedDate.getTime() - Date();
-    let taimConteiner = convertMs(taimConteinerMS);
-    console.log(taimConteiner);
-    getTaim(taimConteiner);
-  }, 1000);
-}
-
-bottonStart.addEventListener('click', taimerStart);
-
-// tosts
 
 function tostPleasechooseadateinthefuture() {
   iziToast.error({
