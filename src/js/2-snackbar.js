@@ -1,4 +1,5 @@
 import iziToast from 'izitoast';
+import 'flatpickr/dist/flatpickr.min.css';
 
 iziToast.settings({
   timeout: 10000,
@@ -11,40 +12,42 @@ iziToast.settings({
 const form = document.querySelector('.form');
 
 form.addEventListener('submit', event => {
-    event.preventDefault();
-    console.log(event.target.state.value);
-    let emaut  = event.target.state.value;
-    let delay = event.target.delay.value;
-    form.reset();
-    creadePromis( emaut, delay)
+  event.preventDefault();
+  console.log(event.target.state.value);
+  let emaut = event.target.state.value;
+  let delay = event.target.delay.value;
+  form.reset();
+  createPromis(emaut, delay)
 
-      });
+
+
     
+})    
     
 
 
-function creadePromis(emaut, delay) {
+function createPromis(emaut, delay) {
   new Promise((resolve, reject) => {
     setTimeout(() => {
-      
       if (emaut == 'fulfilled') {
-        resolve(
-          iziToast.success({
-            title: '✅',
-            message: `Fulfilled promise in ${delay}ms`,
-          })
-        );
+        resolve(delay);
+      } else {
+        reject(delay);
       }
-      else {
-        reject(
-          iziToast.error({
-            title: '❌',
-            message: `Rejected promise in ${delay}ms`,
-          })
-        );
-      }
-    }, delay)
+    }, delay);
   })
+    .then(delay => {
+      iziToast.success({
+        title: '✅',
+        message: `Fulfilled promise in ${delay}ms`,
+      });
+    })
+    .catch(delay => {
+      iziToast.error({
+        title: '❌',
+        message: `Rejected promise in ${delay}ms`,
+      });
+    });
 };
 
 
